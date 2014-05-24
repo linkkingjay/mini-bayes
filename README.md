@@ -4,5 +4,5 @@
 
 ## TODO
 - [ ] better test
-- [ ] realize m-estimate
+- [x] realize m-estimate
 - [ ] refactory the code

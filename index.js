@@ -38,15 +38,19 @@ Bayes.prototype.classify = function (X, fn) {
         classSet.push({ name: data[i][columns - 1], count: 1 });
       }
     }
-
     // 训练集从第一行开始到最后一行
     trainedSet = data.slice(1, rows - 1);
+
+    // 等价样本大小指定为：总数据量 / 类别数量 / 4
+    var m = rows / classSet.length / 4;
 
     // 计算各个分类的概率
     classSet.forEach(function (classItem) {
       // 计算训练集中每个类别的概率
       classItem.probability = classItem.count / (rows - 1);
       classItem.xProbability = classItem.probability;
+      // p 用于 m 估计方法中的先验概率，这里指定为类别的先验概率
+      var p = classItem.probability;
 
       // 计算 X 属于类别 classItem 的概率
       X.forEach(function (x, index) {
@@ -58,7 +62,7 @@ Bayes.prototype.classify = function (X, fn) {
           }
         });
         // 把 Xi 乘到最终的结果中去
-        classItem.xProbability *= count / classItem.count;
+        classItem.xProbability *= (count + m * p) / (classItem.count + m);
       });
 
       classItem.p = classItem.probability * classItem.xProbability;
